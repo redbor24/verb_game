@@ -34,6 +34,19 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
     print(f'Интент "{response.display_name}" создан')
 
 
+def detect_intent_texts(project_id, session_id, texts, language_code):
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(project_id, session_id)
+
+    for text in texts:
+        text_input = dialogflow.TextInput(text=text, language_code=language_code)
+        query_input = dialogflow.QueryInput(text=text_input)
+
+        response = session_client.detect_intent(request={"session": session, "query_input": query_input})
+
+    return response.query_result.fulfillment_text
+
+
 if __name__ == '__main__':
     env = Env()
     env.read_env()
@@ -50,7 +63,6 @@ if __name__ == '__main__':
 
     if not any(True for question in questions if question == intent_name):
         raise QuestionNotFound(f'Вопрос "{intent_name}" не найден в файле')
-    # exit()
 
     for question in questions:
         if question == intent_name:

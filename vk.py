@@ -4,17 +4,21 @@ import vk_api
 from environs import Env
 from vk_api.longpoll import VkEventType, VkLongPoll
 
+from gflow import detect_intent_texts
+
 env = Env()
 env.read_env()
+google_project_id = env('GOOGLE_PROJECT_ID')
 
 
 def echo(event, vk_api):
+    message = detect_intent_texts(google_project_id, google_project_id, [event.text], 'ru-RU')
     vk_api.messages.send(
         user_id=event.user_id,
-        message=event.text,
+        message=message,
         random_id=random.randint(1, 1000)
     )
-    print(f'echo: {event.text}')
+    print(f'echo: {message}')
 
 
 if __name__ == "__main__":
