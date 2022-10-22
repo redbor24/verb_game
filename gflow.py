@@ -67,5 +67,5 @@ if __name__ == '__main__':
         if question == intent_name:
             create_intent(google_project_id, question,
                           questions[question]['questions'],
-                          [questions[question]['answer']])
+                          questions[question]['answer'])
             break
