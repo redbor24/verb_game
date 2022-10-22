@@ -1,3 +1,4 @@
+import logging
 import random
 
 import vk_api
@@ -6,19 +7,22 @@ from vk_api.longpoll import VkEventType, VkLongPoll
 
 from gflow import detect_intent_texts
 
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+
+logger = logging.getLogger(__name__)
 env = Env()
 env.read_env()
 google_project_id = env('GOOGLE_PROJECT_ID')
 
 
 def echo(event, vk_api):
-    message = detect_intent_texts(google_project_id, google_project_id, [event.text], 'ru-RU')
-    vk_api.messages.send(
-        user_id=event.user_id,
-        message=message,
-        random_id=random.randint(1, 1000)
-    )
-    print(f'echo: {message}')
+    message = detect_intent_texts(google_project_id, google_project_id, event.text, 'ru-RU')
+    if message:
+        vk_api.messages.send(user_id=event.user_id, message=message, random_id=random.randint(1, 1000))
+    else:
+        logger.info(f'Не понимай: "{event.text}"')
 
 
 if __name__ == "__main__":
