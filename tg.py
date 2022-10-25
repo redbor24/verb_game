@@ -25,10 +25,9 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     message = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
+    # TODO: проверить работу при редактировании сообщения в Телеге
     if message:
         update.message.reply_text(message)
-    else:
-        logger.info(f'Не понимай: "{update.message.text}"')
 
 
 def main() -> None:

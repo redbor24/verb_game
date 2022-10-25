@@ -21,8 +21,6 @@ def echo(event, vk_api):
     message = detect_intent_texts(google_project_id, google_project_id, event.text, 'ru-RU')
     if message:
         vk_api.messages.send(user_id=event.user_id, message=message, random_id=random.randint(1, 1000))
-    else:
-        logger.info(f'Не понимай: "{event.text}"')
 
 
 if __name__ == "__main__":
