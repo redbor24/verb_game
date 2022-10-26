@@ -79,7 +79,7 @@ if __name__ == '__main__':
         questions = json.load(my_file)
 
     if not any(True for question in questions if question == intent_name):
-        raise QuestionNotFound(intent_name)
+        print(f'Вопрос не найден: {intent_name}')
 
     for question in questions:
         if question == intent_name:
