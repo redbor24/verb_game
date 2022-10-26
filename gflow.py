@@ -1,13 +1,21 @@
+import argparse
 import json
-
-from environs import Env
+import logging
 
 import google.cloud.dialogflow as dialogflow
-import argparse
+from environs import Env
 
 
-class QuestionNotFound(Exception):
-    pass
+class QuestionNotFound(BaseException):
+    def __init__(self, question='', message='Вопрос не найден'):
+        self.question = question
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        if self.question:
+            return f'{self.message}: "{self.question}"'
+        return f'{self.message}'
 
 
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
@@ -31,7 +39,7 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
         request={"parent": parent, "intent": intent}
     )
 
-    print(f'Интент "{response.display_name}" создан')
+    logger.info(f'Интент "{response.display_name}" создан')
 
 
 def detect_intent_texts(project_id, session_id, query, language_code):
@@ -53,19 +61,33 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='New intent')
     parser.add_argument('file', type=str, help='Файл с данными для интента')
-    parser.add_argument('intent', type=str, help='Название интента')
+    parser.add_argument('intent_name', type=str, help='Название интента')
     args = parser.parse_args()
 
-    intent_name = args.intent
+    logging.basicConfig(
+        filename='verbgame_gflow.log',
+        encoding='utf-8',
+        level=logging.INFO,
+        format='%(asctime)s %(name)s:%(levelname)s:%(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+    logger = logging.getLogger('google')
+
+    intent_name = args.intent_name
     with open(args.file, "r", encoding='utf-8') as my_file:
         questions = json.load(my_file)
 
     if not any(True for question in questions if question == intent_name):
-        raise QuestionNotFound(f'Вопрос "{intent_name}" не найден в файле')
+        raise QuestionNotFound(intent_name)
 
     for question in questions:
         if question == intent_name:
-            create_intent(google_project_id, question,
-                          questions[question]['questions'],
-                          questions[question]['answer'])
-            break
+            try:
+                create_intent(google_project_id, question,
+                              questions[question]['questions'],
+                              questions[question]['answer'])
+                break
+            except Exception as e:
+                print(e)
+                logger.error(e)

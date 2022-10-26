@@ -2,16 +2,22 @@ import logging
 
 from environs import Env
 from telegram import Update
-from telegram.ext import CallbackContext, CommandHandler, MessageHandler, Updater
+from telegram.ext import (CallbackContext, CommandHandler, MessageHandler,
+                          Updater)
 from telegram.ext.filters import Filters
 
 from gflow import detect_intent_texts
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+    filename='verbgame_tg.log',
+    encoding='utf-8',
+    level=logging.INFO,
+    format='%(asctime)s %(name)s:%(levelname)s:%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('tgbot')
+
 env = Env()
 env.read_env()
 tg_token = env('TG_TOKEN')
@@ -24,12 +30,15 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def echo(update: Update, context: CallbackContext) -> None:
-    message = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
-    if message:
-        update.message.reply_text(message)
+    if update.message:
+        message = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
+        if message:
+            update.message.reply_text(message)
+        logger.info(update.message.text)
 
 
 def main() -> None:
+    logging.info('Начало работы')
     updater = Updater(tg_token)
 
     dispatcher = updater.dispatcher
