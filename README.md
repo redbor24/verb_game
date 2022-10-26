@@ -85,3 +85,6 @@ python tg.py
 ```shell
 python vk.py
 ```
+
+### Тестовые боты
+Оба бота ([Телеграм](https://t.me/verbgame_bot) и [ВК](https://vk.com/im?media=&sel=-216593240)) сейчас доступны для ознакомления.
