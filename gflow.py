@@ -36,7 +36,7 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
     )
 
     response = intents_client.create_intent(
-        request={"parent": parent, "intent": intent}
+        request={'parent': parent, 'intent': intent}
     )
 
     logger.info(f'Интент "{response.display_name}" создан')
@@ -49,7 +49,7 @@ def detect_intent_texts(project_id, session_id, query, language_code):
     text_input = dialogflow.TextInput(text=query, language_code=language_code)
     query_input = dialogflow.QueryInput(text=text_input)
 
-    response = session_client.detect_intent(request={"session": session, "query_input": query_input})
+    response = session_client.detect_intent(request={'session': session, 'query_input': query_input})
     if not response.query_result.intent.is_fallback:
         return response.query_result.fulfillment_text
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     logger = logging.getLogger('google')
 
     intent_name = args.intent_name
-    with open(args.file, "r", encoding='utf-8') as my_file:
+    with open(args.file, 'r', encoding='utf-8') as my_file:
         questions = json.load(my_file)
 
     if not any(True for question in questions if question == intent_name):

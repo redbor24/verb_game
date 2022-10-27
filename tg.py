@@ -39,7 +39,7 @@ def main() -> None:
     updater = Updater(tg_token)
 
     dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, answer))
 
     updater.start_polling()
