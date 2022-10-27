@@ -18,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger('vkbot')
 
 
-def echo(event, api):
+def answer(event, api):
     message = detect_intent_texts(google_project_id, google_project_id, event.text, 'ru-RU')
     if message:
         api.messages.send(user_id=event.user_id, message=message, random_id=random.randint(1, 1000))
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     longpoll = VkLongPoll(vk_session)
     for vk_event in longpoll.listen():
         if vk_event.type == VkEventType.MESSAGE_NEW and vk_event.to_me:
-            echo(vk_event, vk_api)
+            answer(vk_event, vk_api)

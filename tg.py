@@ -24,7 +24,7 @@ def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(f'Здравствуйте, {user.username}!')
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def answer(update: Update, context: CallbackContext) -> None:
     if update.message:
         message = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
         if message:
@@ -40,7 +40,7 @@ def main() -> None:
 
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, answer))
 
     updater.start_polling()
     updater.idle()
