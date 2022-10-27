@@ -6,18 +6,6 @@ import google.cloud.dialogflow as dialogflow
 from environs import Env
 
 
-class QuestionNotFound(BaseException):
-    def __init__(self, question='', message='Вопрос не найден'):
-        self.question = question
-        self.message = message
-        super().__init__(self.message)
-
-    def __str__(self):
-        if self.question:
-            return f'{self.message}: "{self.question}"'
-        return f'{self.message}'
-
-
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
     intents_client = dialogflow.IntentsClient()
 
