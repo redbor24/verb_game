@@ -29,6 +29,8 @@ def echo(update: Update, context: CallbackContext) -> None:
         message = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
         if message:
             update.message.reply_text(message)
+        else:
+            update.message.reply_text(update.message.text)
         logger.info(update.message.text)
 
 
