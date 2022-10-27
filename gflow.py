@@ -43,15 +43,6 @@ def detect_intent_texts(project_id, session_id, query, language_code):
 
 
 if __name__ == '__main__':
-    env = Env()
-    env.read_env()
-    google_project_id = env('GOOGLE_PROJECT_ID')
-
-    parser = argparse.ArgumentParser(description='New intent')
-    parser.add_argument('file', type=str, help='Файл с данными для интента')
-    parser.add_argument('intent_name', type=str, help='Название интента')
-    args = parser.parse_args()
-
     logging.basicConfig(
         filename='verbgame_gflow.log',
         encoding='utf-8',
@@ -62,20 +53,30 @@ if __name__ == '__main__':
 
     logger = logging.getLogger('google')
 
+    env = Env()
+    env.read_env()
+    google_project_id = env('GOOGLE_PROJECT_ID')
+
+    parser = argparse.ArgumentParser(description='New intent')
+    parser.add_argument('file', type=str, help='Файл с данными для интента')
+    parser.add_argument('-i', '--intent_name', type=str, help='Название интента')
+    args = parser.parse_args()
     intent_name = args.intent_name
+
     with open(args.file, 'r', encoding='utf-8') as my_file:
-        questions = json.load(my_file)
+        intents = json.load(my_file)
 
-    if not any(True for question in questions if question == intent_name):
-        print(f'Вопрос не найден: {intent_name}')
-
-    for question in questions:
-        if question == intent_name:
+    if intent_name:
+        try:
+            intent = intents[intent_name]
+            create_intent(google_project_id, intent_name, intent['questions'], intent['answer'])
+        except Exception as e:
+            logger.error(f'Вопрос не найден: {intent_name}')
+    else:
+        for intent in intents:
             try:
-                create_intent(google_project_id, question,
-                              questions[question]['questions'],
-                              questions[question]['answer'])
-                break
+                create_intent(google_project_id, intent,
+                              intents[intent]['questions'],
+                              intents[intent]['answer'])
             except Exception as e:
-                print(e)
-                logger.error(e)
+                logger.error(f'Ошибка создания интента "{intent}": {e}')
