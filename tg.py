@@ -18,11 +18,6 @@ logging.basicConfig(
 
 logger = logging.getLogger('tgbot')
 
-env = Env()
-env.read_env()
-tg_token = env('TG_TOKEN')
-google_project_id = env('GOOGLE_PROJECT_ID')
-
 
 def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
@@ -50,4 +45,9 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    env = Env()
+    env.read_env()
+    tg_token = env('TG_TOKEN')
+    google_project_id = env('GOOGLE_PROJECT_ID')
+
     main()

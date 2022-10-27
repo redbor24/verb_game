@@ -17,10 +17,6 @@ logging.basicConfig(
 
 logger = logging.getLogger('vkbot')
 
-env = Env()
-env.read_env()
-google_project_id = env('GOOGLE_PROJECT_ID')
-
 
 def echo(event, api):
     message = detect_intent_texts(google_project_id, google_project_id, event.text, 'ru-RU')
@@ -29,6 +25,10 @@ def echo(event, api):
 
 
 if __name__ == "__main__":
+    env = Env()
+    env.read_env()
+    google_project_id = env('GOOGLE_PROJECT_ID')
+
     vk_token = env('VK_TOKEN')
     vk_session = vk_api.VkApi(token=vk_token)
     vk_api = vk_session.get_api()
