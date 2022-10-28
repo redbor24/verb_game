@@ -5,15 +5,8 @@ import vk_api
 from environs import Env
 from vk_api.longpoll import VkEventType, VkLongPoll
 
+import config
 from gflow import detect_intent_texts
-
-logging.basicConfig(
-    filename='verbgame_vk.log',
-    encoding='utf-8',
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s:%(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
 
 logger = logging.getLogger('vkbot')
 
@@ -25,6 +18,14 @@ def answer(event, api):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    log_formatter = logging.Formatter(fmt=config.log_format, datefmt=config.log_date_format)
+
+    fh = logging.FileHandler(filename='verbgame_vk.log', encoding='utf-8')
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(log_formatter)
+    logger.addHandler(fh)
+
     env = Env()
     env.read_env()
     google_project_id = env('GOOGLE_PROJECT_ID')

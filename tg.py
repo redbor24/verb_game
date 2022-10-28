@@ -6,15 +6,8 @@ from telegram.ext import (CallbackContext, CommandHandler, MessageHandler,
                           Updater)
 from telegram.ext.filters import Filters
 
+import config
 from gflow import detect_intent_texts
-
-logging.basicConfig(
-    filename='verbgame_tg.log',
-    encoding='utf-8',
-    level=logging.INFO,
-    format='%(asctime)s %(name)s:%(levelname)s:%(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
 
 logger = logging.getLogger('tgbot')
 
@@ -35,7 +28,7 @@ def answer(update: Update, context: CallbackContext) -> None:
 
 
 def main() -> None:
-    logging.info('Начало работы')
+    logger.info('Начало работы')
     updater = Updater(tg_token)
 
     dispatcher = updater.dispatcher
@@ -47,6 +40,14 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    log_formatter = logging.Formatter(fmt=config.log_format, datefmt=config.log_date_format)
+
+    fh = logging.FileHandler(filename='verbgame_tg.log', encoding='utf-8')
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(log_formatter)
+    logger.addHandler(fh)
+
     env = Env()
     env.read_env()
     tg_token = env('TG_TOKEN')
