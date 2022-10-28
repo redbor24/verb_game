@@ -12,9 +12,11 @@ logger = logging.getLogger('vkbot')
 
 
 def answer(event, api):
-    message = detect_intent_texts(google_project_id, google_project_id, event.text, 'ru-RU')
-    if message:
-        api.messages.send(user_id=event.user_id, message=message, random_id=random.randint(1, 1000))
+    logger.info(f'Вопрос: {event.text}')
+    is_query_responsed, answer_text = detect_intent_texts(google_project_id, google_project_id, event.text, 'ru-RU')
+    if is_query_responsed:
+        api.messages.send(user_id=event.user_id, message=answer_text, random_id=random.randint(1, 1000))
+        logger.info(f'Ответ: {answer_text}')
 
 
 if __name__ == "__main__":

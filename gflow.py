@@ -42,8 +42,7 @@ def detect_intent_texts(project_id, session_id, query, language_code):
     query_input = dialogflow.QueryInput(text=text_input)
 
     response = session_client.detect_intent(request={'session': session, 'query_input': query_input})
-    if not response.query_result.intent.is_fallback:
-        return response.query_result.fulfillment_text
+    return not response.query_result.intent.is_fallback, response.query_result.fulfillment_text
 
 
 if __name__ == '__main__':

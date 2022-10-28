@@ -19,12 +19,10 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def answer(update: Update, context: CallbackContext) -> None:
     if update.message:
-        message = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
-        if message:
-            update.message.reply_text(message)
-        else:
-            update.message.reply_text(update.message.text)
-        logger.info(update.message.text)
+        logger.info(f'Вопрос: {update.message.text}')
+        _, answer_text = detect_intent_texts(google_project_id, google_project_id, update.message.text, 'ru-RU')
+        update.message.reply_text(answer_text)
+        logger.info(f'Ответ: {answer_text}')
 
 
 def main() -> None:
